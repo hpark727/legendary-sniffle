@@ -21,14 +21,3 @@ A personal Flask-based web assistant that parses natural language event descript
 
 - Frontend: HTML, JavaScript, CSS (Dark Theme), Web Speech API
 - Backend: Flask, Google OAuth 2.0, Google Calendar API, Gemini GenAI
-- Deployment: Render (or run locally)
-
----
-
-## Installation
-
-### 1. Clone the Repo
-
-```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
