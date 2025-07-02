@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Calendar Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-size: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1976d2;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    #profilePic {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img id="profilePic" src="" alt="Profile Picture" />
+    <h2>Smart Calendar Assistant</h2>
+    <textarea id="eventText" placeholder="e.g. Meeting next Tuesday at 10am on Zoom"></textarea>
+    <button onclick="submitEvent()">Add to Calendar</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    async function submitEvent() {
+      const text = document.getElementById("eventText").value;
+      const status = document.getElementById("status");
+      status.textContent = "Submitting...";
+
+      try {
+        const res = await fetch("/add_event", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event_text: text })
+        });
+
+        const data = await res.json();
+        status.textContent = data.message || "Event added!";
+        status.style.color = data.status === "error" ? "red" : "lightgreen";
+      } catch (err) {
+        status.textContent = "Network error: " + err;
+        status.style.color = "red";
+      }
+    }
+
+    // Load profile picture on page load
+    fetch("/profile_photo")
+      .then(res => res.json())
+      .then(data => {
+        if (data.photo_url) {
+          document.getElementById("profilePic").src = data.photo_url;
+        }
+      });
+  </script>
+</body>
+</html>
